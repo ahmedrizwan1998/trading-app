@@ -5,7 +5,6 @@ import StockList from '../components/StockList'
 function stockOverviewPage() {
   return (
     <div>
-      Stock Overview Page
       <AutoComplete />
       <StockList />
     </div>

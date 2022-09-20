@@ -1,10 +1,13 @@
 import {useState, useEffect} from "react";
 import finnHub from "../apis/finnHub";
 import {BsFillCaretDownFill, BsFillCaretUpFill} from "react-icons/bs";
+import { useGlobalContext } from "../context";
+import {useNavigate} from "react-router-dom";
 
 function StockList() {
-    const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"]);
+    const {watchList, deleteStock} = useGlobalContext();
     const [stock, setStock] = useState([]);
+    const navigate = useNavigate();
 
     const changeColor = (change) => {
         return change > 0 ?"success":"danger";
@@ -12,6 +15,9 @@ function StockList() {
     const renderIcon = (upDown) => {
         return upDown > 0 ?<BsFillCaretUpFill />:<BsFillCaretDownFill />
     };
+    const handleStockSelect = (symbol) => {
+        navigate(`detail/${symbol}`);
+    }
     useEffect(() => {
         let isMounted = true;
 // with Promise.all() it takes less time         
@@ -40,7 +46,7 @@ function StockList() {
         }    
         fetchData();
         return () => {isMounted = false}
-    }, [])
+    }, [watchList])
   return (
     <div>
         <table className="table hover mt-5">
@@ -59,7 +65,7 @@ function StockList() {
             <tbody>
                 {stock.map((stockData) => {
                     return (
-                        <tr className="table-row" key={stockData.symbol}>
+                        <tr style={{cursor: "pointer"}} onClick={() => {handleStockSelect(stockData.symbol)}} className="table-row" key={stockData.symbol}>
                             <th>{stockData.symbol}</th>
                             <td>{stockData.data.c}</td>
                             <td className={`text-${changeColor(stockData.data.d)}`}>{stockData.data.d} {renderIcon(stockData.data.d)}</td>    
@@ -67,7 +73,10 @@ function StockList() {
                             <td>{stockData.data.h}</td>    
                             <td>{stockData.data.l}</td>    
                             <td>{stockData.data.o}</td>    
-                            <td>{stockData.data.d}</td>    
+                            <td style={{display: "flex", alignItems: "center", gap: "20px", justifyContent: "flex-end", width: "145px"}}>{stockData.data.d} <button onClick={(e) => {
+                                e.stopPropagation()
+                                deleteStock(stockData.symbol)
+                            }} className="btn btn-danger ml-5 btn-sm delete-btn">remove</button></td>    
                         </tr>
                     )
                 })}
