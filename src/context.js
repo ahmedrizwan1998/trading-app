@@ -3,7 +3,7 @@ import {createContext, useContext, useState} from "react";
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-    const [watchList, setWatchList] = useState(JSON.parse(localStorage.getItem("stock")));
+    const [watchList, setWatchList] = useState(["GOOGL", "MSFT", "AMZN"]);
     
     const addStock = (stock) => {
         if (watchList.indexOf(stock) === -1) {

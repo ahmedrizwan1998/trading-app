@@ -31,7 +31,6 @@ function AutoComplete() {
                     result.map((target) => {
                         return (
                             <li onClick={() => {
-                                localStorage.setItem("stock", JSON.stringify(target));
                                 addStock(target.symbol)
                                 setSearch("")
                             }} key={target.symbol}>{target.description} ({target.symbol})</li>     
