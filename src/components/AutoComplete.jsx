@@ -6,18 +6,7 @@ function AutoComplete() {
     const [search, setSearch] = useState("");
     const [result, setResult] = useState([]);
     const {addStock} = useGlobalContext();
-    const fetchData = async () => {
-        try {
-            const response = await finnHub.get("/search", {
-                params: {
-                    q: search
-                }
-            })
-            setResult(response.data.result);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    
     const renderDropDown = () => {
         const dropDown = search ? "show" : null;
         return (
@@ -42,7 +31,20 @@ function AutoComplete() {
     };
     useEffect(() => {
         let isMounted = true;
-        
+        const fetchData = async () => {
+            try {
+                const response = await finnHub.get("/search", {
+                    params: {
+                        q: search
+                    }
+                })
+                if (isMounted) {
+                    setResult(response.data.result);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
         if (search.length > 0) {
             fetchData();
         } else {
